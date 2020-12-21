@@ -96,8 +96,8 @@ public interface ControllerConstants
         }
 
         interface Storecredit {
-            final String adStcr="ad-stcr";
-            final String dirStcr="dir-stcr";
+            final String adStcr="storecred-ad";
+            final String dirStcr="storecred-dir";
         }
 
         interface Tax{

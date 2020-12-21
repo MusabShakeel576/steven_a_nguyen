@@ -19,8 +19,8 @@
 				<div class="sm-ui-component">
 					<h3><s:message code="label.storecredit.directory" text="Store Credit Directory" /></h3>
 					<br/>
-						<c:url var="saveAccountsConfiguration" value="/admin/configuration/saveConfiguration.html"/>
-							<form:form method="POST" modelAttribute="configuration" action="${saveAccountsConfiguration}">
+						<c:url var="saveDirectoryStcr" value="/admin/storecredit/saveDirectory.html"/>
+							<form:form method="POST" modelAttribute="storecredit" action="${saveDirectoryStcr}">
 								<form:errors path="*"  cssClass="alert alert-error" element="div" />
 									<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>
 									<c:forEach var="merchantConfig" items="${configuration.merchantConfigs}" varStatus="counter">

@@ -345,6 +345,12 @@ response.setDateHeader ("Expires", -1);
 			$("#system-configurations-link").click(function() {
   				window.location='<c:url value="/admin/configuration/system.html" />';
 			});
+            $("#dir-stcr-link").click(function() {
+                window.location='<c:url value="/admin/storecredit/directory.html" />';
+            });
+            $("#ad-stcr-link").click(function() {
+                window.location='<c:url value="/admin/storecredit/add.html" />';
+            });
 			$("#taxclass-link").click(function() {
   				window.location='<c:url value="/admin/tax/taxclass/list.html" />';
 			});

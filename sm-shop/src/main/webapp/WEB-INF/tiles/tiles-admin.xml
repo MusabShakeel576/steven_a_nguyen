@@ -302,11 +302,11 @@
   		<put-attribute name="body" value="/pages/admin/configuration/cacheManagement.jsp" /> 
   	</definition>
 
-	<definition name="dir-stcr" template="/layout/admin/layout.jsp">
+	<definition name="storecred-dir" template="/layout/admin/layout.jsp">
 		<put-attribute name="body" value="/pages/admin/storecredit/dirStcr.jsp" />
 	</definition>
 
-	<definition name="ad-stcr" template="/layout/admin/layout.jsp">
+	<definition name="storecred-ad" template="/layout/admin/layout.jsp">
 		<put-attribute name="body" value="/pages/admin/storecredit/adStcr.jsp" />
 	</definition>
   	

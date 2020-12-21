@@ -13,85 +13,31 @@
 
 
 <div class="tabbable">
-
-
- 					<jsp:include page="/common/adminTabs.jsp" />
-
-  					 <div class="tab-content">
-
-
-  					<div class="tab-pane active" id="dir-stcr">
-
-
-								<div class="sm-ui-component">
-								<h3><s:message code="label.storecredit.add" text="Add Store Credit" /></h3>
-								<br/>
-
-
-							<c:url var="saveEmailConfiguration" value="/admin/configuration/saveEmailConfiguration.html"/>
-							<form:form method="POST" modelAttribute="configuration" action="${saveEmailConfiguration}">
-
-
-      								<form:errors path="*" cssClass="alert alert-error" element="div" />
+	<jsp:include page="/common/adminTabs.jsp" />
+		<div class="tab-content">
+  			<div class="tab-pane active" id="dir-stcr">
+				<div class="sm-ui-component">
+					<h3><s:message code="label.storecredit.add" text="Add Credit Directory" /></h3>
+					<br/>
+						<c:url var="saveAddStcr" value="/admin/storecredit/saveAdd.html"/>
+							<form:form method="POST" modelAttribute="storecredit" action="${saveAddStcr}">
+								<form:errors path="*"  cssClass="alert alert-error" element="div" />
 									<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>
+									<c:forEach var="merchantConfig" items="${configuration.merchantConfigs}" varStatus="counter">
 
 
-                  					<div class="control-group">
-                        				<label><s:message code="label.emailconfig.protocol" text="Protocol"/></label>
-                        				<div class="controls">
-											<form:input cssClass="input-large" path="protocol" />
-                        				</div>
-	                                	<span class="help-inline"><form:errors path="protocol" cssClass="error" /></span>
-	                        		</div>
+		                        	   <div class="control-group">
+	                        				<label><s:message code="label.configuration.${merchantConfig.key}" text="** Label for [label.configuration.${merchantConfig.key}] not found **" /> &nbsp;:&nbsp;</label>
+					                        <div class="controls">
+					                        		<form:input  path="merchantConfigs[${counter.index}].value" />
+											        <form:hidden  path="merchantConfigs[${counter.index}].key" />
+											        <form:hidden  path="merchantConfigs[${counter.index}].id" />
+					                                <span class="help-inline"><form:errors path="merchantConfigs[${counter.index}].key" cssClass="error" /></span>
+					                        </div>
+	                  				   </div>
 
-	                        		<div class="control-group">
-                        				<label><s:message code="label.emailconfig.host" text="Host"/></label>
-                        				<div class="controls">
-											<form:input cssClass="input-large" path="host" />
-                        				</div>
-	                                	<span class="help-inline"><form:errors path="host" cssClass="error" /></span>
-	                        		</div>
 
-	                        		<div class="control-group">
-                        				<label><s:message code="label.emailconfig.port" text="Port"/></label>
-                        				<div class="controls">
-											<form:input cssClass="input-large" path="port" />
-                        				</div>
-	                                	<span class="help-inline"><form:errors path="port" cssClass="error" /></span>
-	                        		</div>
-
-	                        		<div class="control-group">
-                        				<label><s:message code="label.emailconfig.username" text="Username"/></label>
-                        				<div class="controls">
-											<form:input cssClass="input-large" path="username" />
-                        				</div>
-	                                	<span class="help-inline"><form:errors path="username" cssClass="error" /></span>
-	                        		</div>
-
-	                        		<div class="control-group">
-                        				<label><s:message code="label.emailconfig.password" text="Password"/></label>
-                        				<div class="controls">
-											<form:password cssClass="input-large" path="password" showPassword="true"/>
-                        				</div>
-	                                	<span class="help-inline"><form:errors path="password" cssClass="error" /></span>
-	                        		</div>
-
-	                        		<div class="control-group">
-                        				<label><s:message code="label.emailconfig.smtpauth" text="SmtpAuth"/></label>
-                        				<div class="controls">
-											<form:checkbox cssClass="input-large" path="smtpAuth" />
-                        				</div>
-                        				<span class="help-inline"><s:message code="label.emailconfig.requiresauthentication" text="Email server requires authentication (should be set to true)"/></span>
-	                        		</div>
-
-	                        		<div class="control-group">
-                        				<label><s:message code="label.emailconfig.starttls" text="Starttls"/></label>
-                        				<div class="controls">
-											<form:checkbox cssClass="input-large" path="starttls" />
-                        				</div>
-                        				<span class="help-inline"><s:message code="label.emailconfig.requiresstarttls" text="Email server requires STARTLS encryption (should be false, check server configurations)"/></span>
-	                        		</div>
-
+	                        		</c:forEach>
 
 	                        		<div class="form-actions">
                   						<div class="pull-right">
@@ -101,17 +47,6 @@
 
 
             	 			</form:form>
-
-
-
-
-
-
-
-
-   					</div>
-
-
-  					</div>
-
-				</div>
+   		</div>
+   	</div>
+</div>

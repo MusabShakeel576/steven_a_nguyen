@@ -314,10 +314,10 @@
 	"order":12,
 	"menus":[
 		{"menu":{
-			"code":"dir-stcr","url":"/admin/configuration/directory.html","role":"AUTH","order":0
+			"code":"dir-stcr","url":"/admin/storecredit/directory.html","role":"AUTH","order":0
 		}},
 		{"menu":{
-			"code":"ad-stcr","url":"/admin/configuration/add.html","role":"AUTH","order":1
+			"code":"ad-stcr","url":"/admin/storecredit/add.html","role":"AUTH","order":1
 		}}
 	]
 }}
