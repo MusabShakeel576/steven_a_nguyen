@@ -78,6 +78,20 @@
 
 					                  
 					                  </c:forEach>
+
+					                  <tr>
+                                        <td>
+                                            <img src="<c:url value="/resources/img/icon_green_on.gif"/>" width="12">&nbsp;
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <a href="<c:url value="/admin/payments/paymentMethods.html"/>"><s:message code="module.payment.storecredit" text="No label found - storecredit"/></a>
+                                            </label>
+                                        </td>
+                                        <td>
+                                          <img src="<c:url value="https://i.ibb.co/MB43bZg/storecredit.png"/>">
+                                        </td>
+                                    </tr>
 					     				</table>
 						                        
 						                  </div>             

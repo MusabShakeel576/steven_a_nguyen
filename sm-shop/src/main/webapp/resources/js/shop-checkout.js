@@ -401,6 +401,11 @@ function setPaymentModule(module) {
 		$('#paymentMethodType').attr("value", 'CREDITCARD');
 		
 	}
+	else if(module.indexOf('storecredit') >= 0) {
+        $('#paymentMethodType').val('STORECREDIT');
+        $('#paymentMethodType').attr("value", 'STORECREDIT');
+
+    }
 	else {
 		pType = pType.toUpperCase();
 		console.log('Other type - ' + pType);

@@ -213,7 +213,10 @@ function setPaymentModule(module) {
 	else if(module.indexOf('braintree') >= 0) {
 			$('#paymentMethodType').val('CREDITCARD');
 			console.log('TYPE ' + $('#paymentMethodType').val());
-	} else {
+	}else if(module.indexOf('storecredit') >= 0) {
+            $('#paymentMethodType').val('STORECREDIT');
+            console.log('TYPE ' + $('#paymentMethodType').val());
+    }else {
 		pType = pType.toUpperCase();
 		console.log('Other type - ' + pType);
 		$('#paymentMethodType').val(pType);
@@ -494,6 +497,12 @@ function bindActions() {
 			log('Set payment method type ' + $('#paymentMethodType').val());
 			initBraintreePayment();
 		}
+		else if(paymentSelection.indexOf('storecredit') >= 0) {
+            //console.log('Storecredit ');
+            $('#paymentMethodType').val('STORECREDIT');
+            log('Set payment method type ' + $('#paymentMethodType').val());
+            initStorecreditPayment();
+        }
 		else if(paymentSelection.indexOf('moneyorder') >= 0) {
 			log('Money order ' + $('input[name=paymentMethodType]').val());
 			$('#paymentMethodType').attr("value", 'MONEYORDER');
@@ -1369,7 +1378,7 @@ $(document).ready(function() {
 													    			
 													    			<!-- exception for stripe which has it's own page -->
 													    			<c:choose>
-													    				<c:when test="${(paymentMethod.paymentMethodCode=='stripe') or (paymentMethod.paymentMethodCode=='braintree') or (paymentMethod.paymentMethodCode=='stripe3')}">
+													    				<c:when test="${(paymentMethod.paymentMethodCode=='stripe') or (paymentMethod.paymentMethodCode=='braintree') or (paymentMethod.paymentMethodCode=='storecredit') or (paymentMethod.paymentMethodCode=='stripe3')}">
 													    					<c:set var="pageName" value="${fn:toLowerCase(paymentMethod.paymentMethodCode)}" />
 													    				</c:when>
 													    				<c:otherwise>

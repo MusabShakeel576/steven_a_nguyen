@@ -1,17 +1,17 @@
 package com.salesmanager.shop.store.controller.customer;
 
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.sql.*;
+import java.util.*;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import com.salesmanager.core.business.services.storecredit.AdStcrService;
+import com.salesmanager.core.business.services.storecredit.PayPalService;
+import com.salesmanager.core.model.storecredit.AdStcr;
+import com.salesmanager.core.model.storecredit.PayPalStcr;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,13 +26,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.business.services.customer.CustomerService;
@@ -65,6 +62,7 @@ import com.salesmanager.shop.utils.EmailTemplatesUtils;
 import com.salesmanager.shop.utils.LabelUtils;
 import com.salesmanager.shop.utils.LanguageUtils;
 import com.salesmanager.shop.utils.LocaleUtils;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Entry point for logged in customers
@@ -127,7 +125,11 @@ public class CustomerAccountController extends AbstractController {
 	@Inject
 	private LabelUtils messages;
 
+	@Inject
+	private AdStcrService adStcrService;
 
+	@Inject
+	private PayPalService payPalService;
 	
 	/**
 	 * Dedicated customer logon page
@@ -217,19 +219,97 @@ public class CustomerAccountController extends AbstractController {
 
 	@PreAuthorize("hasRole('AUTH_CUSTOMER')")
 	@RequestMapping(value="/storecredit.html", method=RequestMethod.GET)
-	public String displayStoreCredit(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public ModelAndView displayStoreCredit(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 
 		MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
-
-		CustomerPassword customerPassword = new CustomerPassword();
-		model.addAttribute("password", customerPassword);
-
+		List<AdStcr> list=adStcrService.getAllAdStcr();
 		/** template **/
 		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.storecredit).append(".").append(store.getStoreTemplate());
+		return new ModelAndView(template.toString(),"list",list);
 
-		return template.toString();
+	}
+	@PreAuthorize("hasRole('AUTH_CUSTOMER')")
+	@RequestMapping(value="/storecredit.html/{id}",method = RequestMethod.GET)
+	public ModelAndView specificStoreCredit(@PathVariable(name="id") int id, ModelMap model, HttpServletRequest request, HttpServletResponse response){
+		MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
+		AdStcr specific = adStcrService.getAdStcrById(id);
+		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.storecredit).append(".").append(store.getStoreTemplate());
+		return new ModelAndView(template.toString(),"specific", specific);
+	}
 
+	@PreAuthorize("hasRole('AUTH_CUSTOMER')")
+	@RequestMapping(value="/paypalStcrSuccess.html",method = RequestMethod.GET)
+	public ModelAndView paypalStcrSuccess(ModelMap model, HttpServletRequest request, HttpServletResponse response){
+		MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
+		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.paypalstcrsuccess).append(".").append(store.getStoreTemplate());
+		return new ModelAndView(template.toString());
+	}
+
+	@PreAuthorize("hasRole('AUTH_CUSTOMER')")
+	@RequestMapping(value="/savePayPalStcr.html/{credit}", method = RequestMethod.GET)
+	public String savePayPalStcr(@ModelAttribute("paypalstcr") PayPalStcr paypalstcr, @PathVariable(name="credit") double credit, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
+		MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Customer customer = customerFacade.getCustomerByUserName(auth.getName(), store);
+		Connection connection = DriverManager.getConnection("jdbc:h2:file:./SALESMANAGER", "test", "password");
+		Statement statement = connection.createStatement();
+		String queryString = "SELECT * FROM SALESMANAGER.PAYPALSTCR WHERE CUSTOMERID = ? ORDER BY ID DESC LIMIT 1";
+		PreparedStatement pstatement = connection.prepareStatement(queryString);
+		int customerId = Math.toIntExact(customer.getId());
+		pstatement.setInt(1, customerId);
+		ResultSet resultset = pstatement.executeQuery();
+		if(!resultset.next()) {
+			System.out.println("Sorry, could not find that publisher. ");
+		} else {
+			String queryString2 = "INSERT INTO SALESMANAGER.PAYPALSTCR (CUSTOMERID, PRICE) VALUES (?,?)";
+			PreparedStatement pstatement2 = connection.prepareStatement(queryString2);
+			int availablestcr = resultset.getInt("price");
+			double total =  availablestcr + credit;
+			pstatement2.setInt(1, customerId);
+			pstatement2.setDouble(2, total);
+			int resultset2 = pstatement2.executeUpdate();
+			return "redirect:/shop/customer/paypalStcrSuccess.html";
+		}
+		return "redirect:/shop";
+	}
+
+	@PreAuthorize("hasRole('AUTH_CUSTOMER')")
+	@RequestMapping(value="/payStcrSuccess.html",method = RequestMethod.GET)
+	public ModelAndView payStcrSuccess(ModelMap model, HttpServletRequest request, HttpServletResponse response){
+		MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
+		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.paystcrsuccess).append(".").append(store.getStoreTemplate());
+		return new ModelAndView(template.toString());
+	}
+
+	@RequestMapping(value={"/savePayStcr.html/{orderprice}"}, method=RequestMethod.POST)
+	public String savePayStcr(@ModelAttribute(value="paypalstcr") PayPalStcr paypalstcr, @PathVariable(name="orderprice") double orderprice, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Customer customer = customerFacade.getCustomerByUserName(auth.getName(), store);
+		Connection connection = DriverManager.getConnection("jdbc:h2:file:./SALESMANAGER", "test", "password");
+		Statement statement = connection.createStatement();
+		String queryString = "SELECT * FROM SALESMANAGER.PAYPALSTCR WHERE CUSTOMERID = ? ORDER BY ID DESC LIMIT 1";
+		PreparedStatement pstatement = connection.prepareStatement(queryString);
+		int customerId = Math.toIntExact(customer.getId());
+		pstatement.setInt(1, customerId);
+		ResultSet resultset = pstatement.executeQuery();
+		if(!resultset.next()) {
+			System.out.println("Sorry, could not find that publisher. ");
+		} else {
+			String queryString2 = "INSERT INTO SALESMANAGER.PAYPALSTCR (CUSTOMERID, PRICE) VALUES (?,?)";
+			PreparedStatement pstatement2 = connection.prepareStatement(queryString2);
+			int availablestcr = resultset.getInt("price");
+			double remainder =  availablestcr - orderprice;
+			if (orderprice > availablestcr){
+				return "redirect:/shop/customer/storecredit.html";
+			}
+			pstatement2.setInt(1, customerId);
+			pstatement2.setDouble(2, remainder);
+			int resultset2 = pstatement2.executeUpdate();
+			return "redirect:/shop/customer/payStcrSuccess.html";
+		}
+		return "redirect:/shop";
 	}
 
 	@PreAuthorize("hasRole('AUTH_CUSTOMER')")

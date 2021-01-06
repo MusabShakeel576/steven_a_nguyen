@@ -115,7 +115,15 @@
 		"image":"braintree.jpg",
 		"configuration":[{"env":"TEST","scheme":"https","host":"NOTREQUIRED","port":"NOTREQUIRED","uri":"NOTREQUIRED"},{"env":"PROD","scheme":"https","host":"NOTREQUIRED","port":"NOTREQUIRED","uri":"NOTREQUIRED"}]
 
-	}
+	},
 
+	{
+		"module": "PAYMENT",
+		"code": "storecredit",
+		"type":"storecredit",
+		"version":"",
+		"regions": ["*"],
+		"image":"storecredit.png"
+	}
 ]
 

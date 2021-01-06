@@ -138,6 +138,27 @@
 		<put-attribute name="footer" value="/pages/shop/templates/{1}/sections/footer.jsp" />
 	</definition>
 
+	<definition name="customerPayStcrSuccess.*" template="/pages/shop/templates/{1}/catalogLayout.jsp">
+		<put-attribute name="header" value="/pages/shop/templates/{1}/sections/header.jsp" />
+		<put-attribute name="navbar" value="/pages/shop/templates/{1}/sections/navbar.jsp" />
+		<put-attribute name="body" value="/pages/shop/common/customer/paystcrsuccess.jsp" />
+		<put-attribute name="footer" value="/pages/shop/templates/{1}/sections/footer.jsp" />
+	</definition>
+
+	<definition name="customerPaypalStcrSuccess.*" template="/pages/shop/templates/{1}/catalogLayout.jsp">
+		<put-attribute name="header" value="/pages/shop/templates/{1}/sections/header.jsp" />
+		<put-attribute name="navbar" value="/pages/shop/templates/{1}/sections/navbar.jsp" />
+		<put-attribute name="body" value="/pages/shop/common/customer/paypalstcrsuccess.jsp" />
+		<put-attribute name="footer" value="/pages/shop/templates/{1}/sections/footer.jsp" />
+	</definition>
+
+	<definition name="customerConfirmPaypalStcr.*" template="/pages/shop/templates/{1}/catalogLayout.jsp">
+		<put-attribute name="header" value="/pages/shop/templates/{1}/sections/header.jsp" />
+		<put-attribute name="navbar" value="/pages/shop/templates/{1}/sections/navbar.jsp" />
+		<put-attribute name="body" value="/pages/shop/common/customer/confirmpaypalstcr.jsp" />
+		<put-attribute name="footer" value="/pages/shop/templates/{1}/sections/footer.jsp" />
+	</definition>
+
   	<definition name="customerPassword.*" template="/pages/shop/templates/{1}/catalogLayout.jsp">
   	  	<put-attribute name="header" value="/pages/shop/templates/{1}/sections/header.jsp" />
   		<put-attribute name="navbar" value="/pages/shop/templates/{1}/sections/navbar.jsp" />

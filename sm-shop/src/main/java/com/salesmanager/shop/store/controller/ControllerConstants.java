@@ -39,6 +39,9 @@ public interface ControllerConstants
             final static String register="register";
             final static String changePassword="customerPassword";
             final static String storecredit="customerStoreCredit";
+            final static String paystcrsuccess="customerPayStcrSuccess";
+            final static String paypalstcrsuccess="customerPaypalStcrSuccess";
+            final static String confirmpaypalstcr="customerConfirmPaypalStcr";
             final static String customerOrders="customerOrders";
             final static String customerOrder="customerOrder";
             final static String Billing="customerAddress";
@@ -62,6 +65,7 @@ public interface ControllerConstants
         interface Checkout{
             final static String checkout="checkout";
             final static String confirmation="confirmation";
+            final static String paystcr="paystcr";
         }
         
         interface Search{
