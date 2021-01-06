@@ -22,7 +22,7 @@ response.setDateHeader ("Expires", -1);
 									   		<i class="fa fa-angle-right"></i> <s:message code="label.customer.billingshipping" text="Billing & shipping information"/>
 									    </a>
 									 </li>
-									 <li><a href="<c:url value="/shop/customer/storecredit.html"/>"><i class="fa fa-angle-right"></i> <s:message code="menu.storecredit" text="Store Credit"/></a></li>
+									 <li><a href="<c:url value="/shop/customer/storecredit.html"/>"><i class="fa fa-angle-right"></i> <s:message code="menu.storecredit" text="Store Credit"/> $ ${balancestcr}</a></li>
 									 <li><a href="<c:url value="/shop/customer/password.html"/>"><i class="fa fa-angle-right"></i> <s:message code="menu.change-password" text="Change password"/></a></li>
 									 <li><a href="<c:url value="/shop/customer/logout"/>"><i class="fa fa-angle-right"></i> <s:message code="button.label.logout" text="Logout"/></a></li>
 								</ul>

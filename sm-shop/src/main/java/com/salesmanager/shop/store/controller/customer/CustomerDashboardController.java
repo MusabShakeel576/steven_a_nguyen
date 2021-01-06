@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,11 +53,32 @@ public class CustomerDashboardController extends AbstractController {
 		
 
 	    MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
+
 	    Language language = (Language)request.getAttribute(Constants.LANGUAGE);
 	    
 		Customer customer = (Customer)request.getAttribute(Constants.CUSTOMER);
+
 		getCustomerOptions(model, customer, store, language);
-        
+
+		Connection connection = DriverManager.getConnection("jdbc:h2:file:./SALESMANAGER", "test", "password");
+
+		Statement statement = connection.createStatement();
+
+		String queryString = "SELECT * FROM SALESMANAGER.PAYPALSTCR WHERE CUSTOMERID = ? ORDER BY ID DESC LIMIT 1";
+
+		PreparedStatement pstatement = connection.prepareStatement(queryString);
+
+		int customerId = Math.toIntExact(customer.getId());
+
+		pstatement.setInt(1, customerId);
+
+		ResultSet resultset = pstatement.executeQuery();
+
+		if(!resultset.next()) {
+			System.out.println("Sorry, could not find that publisher. ");
+		} else {
+			model.addAttribute("balancestcr", resultset.getString("price"));
+		}
 
 		model.addAttribute("section","dashboard");
 		

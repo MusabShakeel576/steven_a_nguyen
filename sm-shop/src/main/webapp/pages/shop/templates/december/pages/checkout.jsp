@@ -478,6 +478,12 @@ function bindActions() {
 			log('Payment method type -> ' + $('input[name=paymentMethodType]').val());
 			initBraintreePayment();
 		}
+		else if(paymentSelection.indexOf('storecredit') >= 0) {
+            log('Storecredit ' + $('input[name=paymentMethodType]').val());
+            $('#paymentMethodType').attr("value", 'STORECREDIT');
+            log('Payment method type -> ' + $('input[name=paymentMethodType]').val());
+            initStorecreditPayment();
+        }
 		else if(paymentSelection.indexOf('moneyorder') >= 0) {
 			log('Money order ' + $('input[name=paymentMethodType]').val());
 			$('#paymentMethodType').attr("value", 'MONEYORDER');
@@ -556,9 +562,15 @@ function initPayment(paymentSelection) {
 	
 }
 
+function openWin() {
+  window.open("http://localhost:8080/shop/order/paystcr.html/${order.orderTotalSummary.total}", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
+}
+
+document.getElementById("paystcrJs").innerHTML = "Pay by Store Credit";
+document.getElementById("paystcrJs").href = "${pageContext.request.contextPath}/shop/order/paystcr.html/${order.orderTotalSummary.total}";
+document.getElementById("paystcrJs").target = "_blank";
 
 </script>
-
 		<!-- page-title-wrapper-end -->
 		<!-- entry-header-area start -->
 		<div class="entry-header-area ptb-40">
@@ -605,7 +617,9 @@ function initPayment(paymentSelection) {
 						</c:if>
 					</div>
 					<!--alert-error-->
-				
+
+				    <form method="POST" action="${pageContext.request.contextPath}/shop/order/paystcr.html/${order.orderTotalSummary.total}" id="payStcrForm" modelAttribute="paypalstcr"></form>
+
    					<c:set var="commitUrl" value="${pageContext.request.contextPath}/shop/order/commitOrder.html"/>
    					<form:form id="checkoutForm" method="POST" enctype="multipart/form-data" modelAttribute="order" action="${commitUrl}">
 						<input type="hidden" id="useDistanceWindow" name="useDistanceWindow" value="<c:out value="${shippingMetaData.useDistanceModule}"/>">
@@ -1007,7 +1021,7 @@ function initPayment(paymentSelection) {
 													<!-- exception for stripe, braintree... which has it's own page -->
 													<c:choose>
 														<c:when
-															test="${(paymentMethod.paymentMethodCode=='stripe') or (paymentMethod.paymentMethodCode=='braintree') or (paymentMethod.paymentMethodCode=='stripe3')}">
+															test="${(paymentMethod.paymentMethodCode=='stripe') or (paymentMethod.paymentMethodCode=='braintree') or (paymentMethod.paymentMethodCode=='storecredit') or (paymentMethod.paymentMethodCode=='stripe3')}">
 															<c:set var="pageName"
 																value="${fn:toLowerCase(paymentMethod.paymentMethodCode)}" />
 														</c:when>
@@ -1025,10 +1039,11 @@ function initPayment(paymentSelection) {
 											<input type="hidden" id="paymentMethodType" name="paymentMethodType" value="<c:if test="${order.paymentMethodType!=null}"><c:out value="${order.paymentMethodType}"/></c:if>" />
 											<input type="hidden" id="paymentModule" name="paymentModule"
 												value="<c:choose><c:when test="${order.paymentModule!=null}"><c:out value="${order.paymentModule}"/></c:when><c:otherwise><c:out value="${paymentModule}" /></c:otherwise></c:choose>" />
-										</div>
-								
-								</div>
 
+                                                <a id="paystcr" href="http://localhost:8080/shop/order/paystcr.html/${order.orderTotalSummary.total}" target="_blank"><button type="button" class="btn btn-primary">Pay by Store Credit</button></a>
+
+										</div>
+								</div>
 								<c:if
 									test="${requestScope.CONFIGS['displayCustomerAgreement']==true}">
 									<!-- customer agreement -->

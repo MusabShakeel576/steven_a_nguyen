@@ -11,24 +11,29 @@ response.setDateHeader ("Expires", -1);
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %>
-<%@ taglib uri="/WEB-INF/shopizer-functions.tld" prefix="display" %> 
- 
+<%@ taglib uri="/WEB-INF/shopizer-functions.tld" prefix="display" %>
+<%@ page import = "java.io.*,java.util.*,java.sql.*"%>
+<%@ page import = "javax.servlet.http.*,javax.servlet.*" %>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/sql" prefix = "sql"%>
+<%@ page import="java.sql.*" %>
+<% Class.forName("org.h2.Driver"); %>
+
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 
 <script src="<c:url value="/resources/js/hogan.js" />"></script>
 <script src="<c:url value="/resources/templates/december/js/bloodhound.min.js" />"></script>
 <script src="<c:url value="/resources/templates/december/js/typeahead.bundle.min.js" />"></script>
-
-
 <!-- Customer account menu logged in customer will display in customerAccount placeholder -->
 <script type="text/html" id="customerLoggedInAccountTemplate">
+
           		  <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="false"> <i class="fa fa-user mr-5"></i><span class="hidden-xs"><s:message code="label.generic.welcome" text="Welcome" />&nbsp;<span>{{firstName}}</span><i class="fa fa-angle-down ml-5"></i></span> </a>
 		          <ul class="dropdown-menu w-150" role="menu">
 		            <li><a href="#" onClick="javascript:location.href='<c:url value="/shop/customer/dashboard.html" />';" href="#"><s:message code="label.customer.myaccount" text="My account"/></a></a>
 		            </li>
-		            <li><a href="#" onClick="javascript:location.href='<c:url value="/shop/customer/storecredit.html" />';" href="#"><s:message code="label.customer.storecredit" text="Store Credit"/></a>
-                    </li>
+                     <li><a href="#" onClick="javascript:location.href='<c:url value="/shop/customer/storecredit.html" />';" href="#"><s:message code="label.customer.storecredit" text="Store Credit"/></a>
+                     </li>
+
 		            <li><a href="#" onClick="javascript:location.href='<c:url value="/shop/customer/logout" />';" href="#"><s:message code="button.label.logout" text="Logout"/></a>
 		            </li>
 		         </ul>
@@ -38,7 +43,6 @@ response.setDateHeader ("Expires", -1);
                 })(jQuery);
 			</script>
 </script>
-
 <!-- Customer account menu not logged in customer will display in customerAccount placeholder -->
 <script type="text/html" id="customerNotLoggedInAccountTemplate">
           		  <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="false"> <i class="fa fa-user mr-5"></i><span class="hidden-xs"><s:message code="label.customer.myaccount" text="My Account"/><i class="fa fa-angle-down ml-5"></i></span> </a>

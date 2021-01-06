@@ -1,5 +1,6 @@
 package com.salesmanager.shop.store.controller.order;
 
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,23 +14,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import com.salesmanager.core.business.services.storecredit.AdStcrService;
+import com.salesmanager.core.model.storecredit.PayPalStcr;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.salesmanager.core.business.exception.ServiceException;
@@ -84,6 +85,7 @@ import com.salesmanager.shop.store.controller.order.facade.OrderFacade;
 import com.salesmanager.shop.store.controller.shoppingCart.facade.ShoppingCartFacade;
 import com.salesmanager.shop.utils.EmailTemplatesUtils;
 import com.salesmanager.shop.utils.LabelUtils;
+import org.springframework.web.servlet.ModelAndView;
 
 
 /**
@@ -151,6 +153,9 @@ public class ShoppingOrderController extends AbstractController {
 	
 	@Inject
 	private OrderProductDownloadService orderProdctDownloadService;
+
+	@Inject
+	private AdStcrService adStcrService;
 	
 	@SuppressWarnings("unused")
 	@RequestMapping("/checkout.html")
@@ -778,7 +783,7 @@ public class ShoppingOrderController extends AbstractController {
 					
 					
 				}
-				
+
 				/**
 				 * Prepare failure data
 				 * - Get another shipping quote
@@ -976,10 +981,17 @@ public class ShoppingOrderController extends AbstractController {
 
 		
 	}
-	
-	
 
-	
+	@RequestMapping(value="/paystcr.html/{orderprice}", method=RequestMethod.GET)
+	public ModelAndView displayPayStcr(@PathVariable(name="orderprice") double orderprice, ModelMap model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Language language = (Language)request.getAttribute("LANGUAGE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
+		Customer customer = (Customer)request.getSession().getAttribute(Constants.CUSTOMER);
+		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.storecredit).append(".").append(store.getStoreTemplate());
+		return new ModelAndView(template.toString(),"orderprice", orderprice);
+
+	}
+
 	/**
 	 * Recalculates shipping and tax following a change in country or province
 	 * @param order

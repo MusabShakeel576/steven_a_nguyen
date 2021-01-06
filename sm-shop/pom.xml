@@ -167,8 +167,13 @@
 			<artifactId>commons-rng-simple</artifactId>
 			<version>${commons-rng-simple.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>com.paypal.sdk</groupId>
+            <artifactId>paypal-core</artifactId>
+            <version>1.7.2</version>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 
 	<build>
 		<plugins>
